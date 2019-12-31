@@ -16,7 +16,7 @@ eth-abi==2.1.0
 eth-account==0.4.0
 eth-hash==0.2.0
 eth-keyfile==0.5.1
-eth-keys==0.3.0
+eth-keys==0.2.4
 eth-rlp==0.1.2
 eth-typing==2.2.1
 eth-utils==1.8.4
