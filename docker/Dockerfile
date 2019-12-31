@@ -1,34 +1,29 @@
+FROM python:3.7-buster as builder
 
-# This will build the latest master
-#
-# we use an intermediate image to build this image. it will make the resulting
-# image a bit smaller.
-#
-# you can build the image with:
-#
-#   docker build . -t raiden
+ARG REPO=rsksmart/lumino
+ARG LUMINO_VERSION=releases/0.0.4
 
-FROM python:3 as builder
+RUN apt update
+RUN apt install software-properties-common -y
+RUN apt-get install libpq-dev python3.7-dev -y
 
-# use --build-arg RAIDENVERSION=v0.0.3 to build a specific (tagged) version
-ARG REPO=raiden-network/raiden
-ARG RAIDENVERSION=master
+ADD https://api.github.com/repos/${REPO}/commits/${LUMINO_VERSION} /dev/null
 
-# This is a "hack" to automatically invalidate the cache in case there are new commits
-ADD https://api.github.com/repos/${REPO}/commits/${RAIDENVERSION} /dev/null
+RUN git clone -b ${LUMINO_VERSION} https://github.com/${REPO} /app/lumino --depth 1
 
-# clone raiden repo + install dependencies
-RUN git clone -b ${RAIDENVERSION} https://github.com/${REPO} /app/raiden
+RUN ls /app/lumino
+
+RUN apt install libsecp256k1-dev -y
+
+RUN apt-get install libssl-dev build-essential automake pkg-config libtool libffi-dev libgmp-dev libyaml-cpp-dev -y
 
 RUN python3 -m venv /opt/venv
 
-RUN /opt/venv/bin/pip3 install -c /app/raiden/constraints.txt -r /app/raiden/requirements.txt /app/raiden
+RUN /opt/venv/bin/pip3 install -r /app/lumino/requirements.txt -c /app/lumino/constraints.txt -e /app/lumino
+
+WORKDIR /app/lumino
+
+RUN python3 setup.py develop
 
 
-FROM python:3-slim as runner
 
-COPY --from=builder /opt/venv /opt/venv
-
-EXPOSE 5001
-
-ENTRYPOINT ["/opt/venv/bin/python3", "-m", "raiden"]
