@@ -25,5 +25,18 @@ WORKDIR /app/lumino
 
 RUN python3 setup.py develop
 
+RUN lumino
+
+#FROM python:3.7-slim as runner
+
+#COPY --from=builder /opt/venv /opt/venv
+
+#WORKDIR /opt/venv
+
+#RUN ls /opt/venv/bin
+
+#ENTRYPOINT ["/opt/venv/bin/python3","lumino"]
+
+
 
 
