@@ -29,8 +29,17 @@ RUN python setup.py develop
 
 #RUN lumino
 
-ENTRYPOINT ["lumino"]
+RUN apt install expect -y
 
+COPY ./run.exp /app/lumino/
+
+RUN chmod +x /app/lumino/run.exp
+
+ENTRYPOINT "/app/lumino/run.exp"
+
+#ENTRYPOINT ["lumino"]
+
+#--------------------------------
 #FROM python:3.7-slim as runner
 
 #COPY --from=builder /opt/venv /opt/venv

@@ -1,0 +1,15 @@
+#!/usr/bin/expect
+
+set timeout -1
+
+#expect << END
+
+spawn lumino
+
+expect "*Have you read and understood and do you accept the RIF Lumino Disclosure Agreement and Privacy Warning*"
+send -- "y\r\n"
+sleep 1
+interact
+wait
+#END
+
