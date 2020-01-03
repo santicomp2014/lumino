@@ -33,9 +33,29 @@ RUN apt install expect -y
 
 COPY ./run.exp /app/lumino/
 
-RUN chmod +x /app/lumino/run.exp
+COPY ./start.sh /app/lumino
 
-ENTRYPOINT "/app/lumino/run.exp"
+RUN chmod +x /app/lumino/run.exp /app/lumino/start.sh
+
+RUN wget https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.9-01744997.tar.gz
+
+RUN tar -zxvf geth-linux-amd64-1.9.9-01744997.tar.gz
+
+RUN rm geth-linux-amd64-1.9.9-01744997.tar.gz
+
+RUN mv geth-linux-amd64-1.9.9-01744997/geth ./ && chmod +x geth
+
+RUN rm -rf geth-linux-amd64-1.9.9-01744997
+
+#RUN export PASS=12345
+
+RUN echo "12345" > ./passwd
+
+CMD ./geth account new --password ./passwd
+
+CMD ls /root/.ethereum/keystore
+
+ENTRYPOINT "/app/lumino/start.sh"
 
 #ENTRYPOINT ["lumino"]
 

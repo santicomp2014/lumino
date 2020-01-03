@@ -4,11 +4,19 @@ set timeout -1
 
 #expect << END
 
-spawn lumino
+spawn lumino --keystore-path $env(KEYSTORE_PATH) --network-id 31 --eth-rpc-endpoint $env(RSK_NODE_URL) --environment-type development --tokennetwork-registry-contract-address=$env(TOKENNETWORK_REGISTRY_CONTRACT_ADDRESS) --secret-registry-contract-address=$env(SECRET_REGISTRY_CONTRACT_ADDRESS) --endpoint-registry-contract-address=$env(ENDPOINT_REGISTRY_CONTRACT_ADDRESS) --no-sync-check --api-address=127.0.0.1:5001 --discoverable --hub-mode
 
+    #--rnsdomain $YOUR_RNS_DOMAIN
 expect "*Have you read and understood and do you accept the RIF Lumino Disclosure Agreement and Privacy Warning*"
 send -- "y\r\n"
 sleep 1
+expect "*The following accounts were found in your machine*"
+send -- "0\r\n"
+sleep 1
+expect "*unlock*"
+send -- "12345\r\n"
+sleep 1
+sleep 10
 interact
 wait
 #END
